@@ -1,0 +1,68 @@
+1)
+SELECT
+MAX(distance) AS 'Furthest Distance Away'
+FROM flights
+
+2)
+SELECT
+model AS 'Model',
+engines AS 'Engines',
+MAX(seats) as 'Number of Seats'
+FROM planes
+GROUP BY engines
+ORDER BY engines
+
+3)
+SELECT
+COUNT(*) AS 'Total Number of Flights'
+FROM flights
+
+4)
+SELECT
+carrier AS 'Airline',
+COUNT(*) AS 'Total Number of Flights'
+FROM flights
+GROUP BY carrier
+ORDER BY carrier
+
+5)
+SELECT
+carrier AS 'Airline',
+COUNT(*) AS 'Total Number of Flights'
+FROM flights
+GROUP BY carrier
+ORDER BY COUNT(*) DESC
+
+6)
+SELECT
+carrier AS 'Airline',
+COUNT(*) AS 'Total Number of Flights'
+FROM flights
+GROUP BY carrier
+ORDER BY COUNT(*) DESC
+LIMIT 5
+
+7)
+SELECT
+carrier AS 'Airline',
+COUNT(*) AS 'Total Number of Flights > 1000 mi'
+FROM flights
+WHERE distance > 1000
+GROUP BY carrier
+ORDER BY COUNT(*) DESC
+LIMIT 5
+
+8)
+#How many flights leaving an airport in NYC and terminating
+#in Miami were delayed more than 1 hour? What was the average arrival delay?
+
+SELECT
+origin AS 'Origin',
+dest AS 'Destination',
+COUNT(*) AS 'Count of Flights',
+ROUND(AVG(arr_delay)) AS 'Average Arrival Delay'
+FROM flights
+WHERE origin IN ('JFK','LGA')
+AND DEST IN ('MIA')
+AND arr_delay > 60
+GROUP BY origin
