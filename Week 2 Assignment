@@ -1,0 +1,57 @@
+-- loadvideosandreviews.sql
+-- Kelly Shaffer Week 2 Assignment
+
+-- Deletes any tables with these names
+DROP TABLE IF EXISTS howtovideos;
+DROP TABLE IF EXISTS reviews;
+
+-- Creates howto table
+CREATE TABLE howtovideos (
+  videoID char(1) PRIMARY KEY,
+  title varchar(50) NOT NULL,
+  length char(5) NOT NULL,
+  URL varchar(40) NOT NULL
+  );
+
+-- Loads csv data into newly created howto table
+LOAD DATA LOCAL INFILE 'C:/Users/Kelly/Documents/CUNY/SQL Bridge Course/Video Data/howtovideos.csv' 
+INTO TABLE howtovideos 
+FIELDS TERMINATED BY ',' 
+ENCLOSED BY '"'
+LINES TERMINATED BY '\n'
+IGNORE 1 ROWS;
+
+-- Creates reviews table
+CREATE TABLE reviews (
+  videoID char(1),
+  reviewer varchar(12) NOT NULL,
+  rating ENUM('0','1','2','3','4','5'),
+  review varchar(35) NOT NULL
+  );
+  
+-- Loads csv data into newly created reviews table
+LOAD DATA LOCAL INFILE 'C:/Users/Kelly/Documents/CUNY/SQL Bridge Course/Video Data/reviews.csv' 
+INTO TABLE reviews
+FIELDS TERMINATED BY ',' 
+ENCLOSED BY '"'
+LINES TERMINATED BY '\n'
+IGNORE 1 ROWS;
+
+-- Finds empty ratings and changes them to null
+UPDATE reviews SET rating = NULL where rating = '';
+
+-- Gets rid of duplicate videoID field, displays the
+-- remaining fields, including those with no reviews.
+-- Also updates the field names, etc.
+SELECT
+H.videoID AS 'Video ID',
+H.title AS 'Video Title',
+H.length AS 'Video Length',
+H.URL AS 'Video Link',
+R.reviewer AS 'Reviewer Name',
+R.rating AS 'Rating',
+R.review AS 'Review'
+FROM howtovideos AS H
+LEFT JOIN reviews AS R
+ON H.videoID = R.videoID
+ORDER BY H.videoID
