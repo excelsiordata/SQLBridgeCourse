@@ -1,0 +1,108 @@
+-- W3 KLS Final Project.sql
+-- Kelly Shaffer Week 3 Final Project
+
+-- Deletes any tables with these names
+DROP TABLE IF EXISTS emp;
+DROP TABLE IF EXISTS groups;
+DROP TABLE IF EXISTS emp_groups;
+DROP TABLE IF EXISTS groups_rooms;
+
+-- Creates emp table
+CREATE TABLE emp (
+	EID tinyint PRIMARY KEY,
+	Emp_Name varchar(14)
+);
+
+INSERT INTO `emp` (`EID`, `Emp_Name`) VALUES
+                                 (1, 'Modesto'), 
+                                 (2, 'Ayine'), 
+                                 (3, 'Christopher'),
+                                 (4, 'Cheong woo'),
+                                 (5, 'Saulat'),
+                                 (6, 'Heidy');
+
+-- Creates groups table
+CREATE TABLE groups (
+	Group_ID tinyint PRIMARY KEY,
+	Group_Name varchar(20)
+);
+
+-- Load data into table
+INSERT INTO `groups` (`Group_ID`, `Group_Name`) VALUES 
+                                 (1, 'I.T.'), 
+                                 (2, 'Sales'), 
+                                 (3, 'Administration'),
+                                 (4, 'Operations'),
+                                 (5, 'Unassigned');
+
+-- Create emp_groups table
+CREATE TABLE emp_groups (
+	EID tinyint,
+	Group_ID tinyint
+);
+
+-- Load data into table
+INSERT INTO `emp_groups` (`EID`, `Group_ID`) VALUES 
+                                 (1, 1), 
+                                 (2, 1), 
+                                 (3, 2),
+                                 (4, 2),
+                                 (5, 3),
+                                 (6, 5),
+								 (0, 4);
+
+-- Create groups_rooms table
+CREATE TABLE groups_rooms (
+	Group_ID tinyint,
+    Room_Name varchar(14)
+);
+
+-- Load data into table
+INSERT INTO `groups_rooms` (`Group_ID`, `Room_Name`) VALUES 
+                                 (1, '101'),
+                                 (1, '102'),
+                                 (2, '102'), 
+                                 (2, 'Auditorium A'), 
+                                 (3, 'No access'),
+                                 (4, 'No access'),
+                                 (5, 'No access'),
+                                 (0, 'Auditorium B');
+
+-- Q1
+SELECT
+groups.Group_Name,
+emp.Emp_Name
+FROM emp
+LEFT JOIN emp_groups
+ON emp.EID = emp_groups.EID
+RIGHT JOIN groups
+ON emp_groups.Group_ID = groups.Group_ID
+GROUP BY groups.Group_Name, emp.Emp_Name
+ORDER BY groups.Group_Name, emp.Emp_Name;
+
+-- Q2
+SELECT
+groups_rooms.Room_Name,
+groups.Group_Name
+FROM emp_groups
+LEFT JOIN groups
+ON emp_groups.Group_ID = groups.Group_ID
+RIGHT JOIN groups_rooms
+ON emp_groups.Group_ID = groups_rooms.Group_ID
+GROUP BY groups_rooms.Room_Name, groups.Group_Name
+ORDER BY groups_rooms.Room_Name, groups.Group_Name;
+
+-- Q3
+SELECT
+emp.Emp_Name,
+groups.Group_Name,
+groups_rooms.Room_Name
+FROM emp
+LEFT JOIN emp_groups
+ON emp.EID = emp_groups.EID
+RIGHT JOIN groups
+ON emp_groups.Group_ID = groups.Group_ID
+LEFT JOIN groups_rooms
+ON emp_groups.Group_ID = groups_rooms.Group_ID
+GROUP BY groups_rooms.Room_Name,groups.Group_Name,emp.Emp_Name
+ORDER BY emp.Emp_Name, groups.Group_Name, groups_rooms.Room_Name;
